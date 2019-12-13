@@ -1,0 +1,100 @@
+VERSION 1.0 CLASS
+BEGIN
+  MultiUse = -1  'True
+END
+Attribute VB_Name = "ThisWorkbook"
+Attribute VB_GlobalNameSpace = False
+Attribute VB_Creatable = False
+Attribute VB_PredeclaredId = True
+Attribute VB_Exposed = True
+Sub Stocks()
+    
+    Dim ws As Worksheet
+    
+    For Each ws In Worksheets
+        ws.Activate
+        
+        Dim ticker As String
+    
+        Dim RowLen As Long
+        
+        Dim SummLen As Long
+    
+        Dim VolCount As Double
+    
+        Dim SummTable As Integer
+    
+        Dim OpenStock As Double
+    
+        Dim CloseStock As Double
+    
+        RowLen = Cells(Rows.Count, 1).End(xlUp).Row
+    
+        Cells(1, 9) = "Ticker"
+    
+        Cells(1, 10) = "Yearly Change"
+    
+        Cells(1, 11) = "Percent Change"
+    
+        Cells(1, 12) = "Total Stock Volume"
+    
+        OpenStock = Cells(2, 3)
+    
+        SummTable = 2
+    
+        For i = 2 To RowLen
+        
+            If Cells(i + 1, 1) <> Cells(i, 1) Then
+            
+                VolCount = VolCount + Cells(i, 7)
+        
+                ticker = Cells(i, 1)
+            
+                Cells(SummTable, 9) = ticker
+            
+                CloseStock = Cells(i, 6)
+            
+                Cells(SummTable, 10) = (OpenStock - CloseStock) * -1
+                
+                If OpenStock = 0 Then
+                    
+                    Cells(SummTable, 11) = 0
+                
+                Else
+                
+                    Cells(SummTable, 11) = Cells(SummTable, 10) / OpenStock
+                
+                End If
+            
+                Cells(SummTable, 11).NumberFormat = "0.00%"
+            
+                If Cells(SummTable, 10).Value >= 0 Then
+                
+                    Cells(SummTable, 10).Interior.ColorIndex = 4
+            
+                Else
+                
+                    Cells(SummTable, 10).Interior.ColorIndex = 3
+            
+                End If
+            
+                Cells(SummTable, 12) = VolCount
+            
+                SummTable = SummTable + 1
+            
+                OpenStock = Cells(i + 1, 3)
+            
+                VolCount = 0
+            
+            Else
+        
+                VolCount = VolCount + Cells(i, 7)
+            
+            End If
+        
+        Next i
+    
+    Next ws
+    
+End Sub
+
